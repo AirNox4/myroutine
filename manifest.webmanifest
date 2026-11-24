@@ -1,0 +1,10 @@
+{
+  "name": "MyRoutine",
+  "short_name": "MyRoutine",
+  "description": "Ton planning personnel et le suivi de tes objectifs",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0d0e11",
+  "theme_color": "#101114",
+  "icons": []
+}

@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101114">
+<meta name="description" content="MyRoutine — ton planning personnel">
+<link rel="manifest" href="manifest.webmanifest">
+<title>MyRoutine</title>
+<style>
+:root{color-scheme:dark;--bg:#0d0e11;--panel:#17191e;--panel2:#20232a;--line:#2b2f38;--text:#f2f3f5;--muted:#9ba1ad;--accent:#8b7cff;--accent2:#5b8cff;--green:#55d6a2;--red:#ff7777}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% -10%,#25213f 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.45 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:12px;background:var(--panel2);color:var(--text);padding:10px 13px}button:hover{border-color:#7168c7}button.primary{background:var(--accent);border-color:var(--accent);color:white;font-weight:650}button.ghost{background:transparent}button.small{padding:7px 10px;font-size:13px}
+.app{max-width:1120px;margin:auto;padding:22px 18px 50px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}.brand{display:flex;align-items:center;gap:11px}.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#8b7cff,#4f8cff);display:grid;place-items:center;font-weight:900;font-size:20px}.brand h1{font-size:21px;margin:0}.brand p{margin:0;color:var(--muted);font-size:12px}.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+.tabs{display:flex;gap:7px;overflow:auto;padding-bottom:12px;margin-bottom:8px}.tab{white-space:nowrap}.tab.active{background:#302b55;border-color:#6258a8;color:#fff}
+.view{display:none}.view.active{display:block}.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:15px}.card{background:rgba(23,25,30,.94);border:1px solid var(--line);border-radius:18px;padding:17px;box-shadow:0 12px 32px #0002}.card h2,.card h3{margin:0 0 12px}.eyebrow{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.09em}.hero{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.hero h2{font-size:25px;margin:4px 0}.muted{color:var(--muted)}.progress{height:8px;background:#30333b;border-radius:9px;overflow:hidden;margin:12px 0}.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0;transition:width .2s}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:14px}.stat{background:var(--panel2);padding:12px;border-radius:13px}.stat b{display:block;font-size:22px}.stat small{color:var(--muted)}
+.task{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid #292c34}.task:last-child{border:0}.task input{width:18px;height:18px;accent-color:var(--accent)}.task-main{flex:1;min-width:0}.task-title{font-weight:600}.task.done .task-title{text-decoration:line-through;color:var(--muted)}.task-time{font-size:12px;color:var(--muted)}.tag{font-size:11px;padding:4px 8px;border-radius:20px;background:#2b2c43;color:#c9c2ff;white-space:nowrap}
+.daybar{display:flex;gap:7px;overflow:auto;margin:12px 0}.daybtn{min-width:44px;text-align:center;padding:9px 10px}.daybtn.selected{background:#302b55;border-color:#7168c7}.schedule-row{display:grid;grid-template-columns:92px 1fr auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #292c34}.schedule-row:last-child{border:0}.schedule-row strong{font-variant-numeric:tabular-nums}.schedule-row p{margin:0}.schedule-row small{color:var(--muted)}.row-actions{display:flex;gap:5px}
+.timer{text-align:center;padding:24px 10px}.clock{font-size:clamp(48px,10vw,76px);font-weight:750;letter-spacing:-3px;font-variant-numeric:tabular-nums}.timer-controls{display:flex;justify-content:center;gap:8px;margin-top:16px}.field{display:grid;gap:6px;margin:10px 0}.field label{font-size:13px;color:var(--muted)}input,select{width:100%;background:#101217;border:1px solid var(--line);border-radius:10px;color:var(--text);padding:10px}
+.weekstats{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;align-items:end;height:190px;margin-top:18px}.barcol{height:100%;display:flex;flex-direction:column;justify-content:end;align-items:center;gap:7px}.bar{width:min(30px,70%);min-height:4px;background:linear-gradient(180deg,#a69cff,#5e8dff);border-radius:8px 8px 3px 3px}.barcol small{color:var(--muted);font-size:11px}.barcol b{font-size:11px}
+.note{border:1px solid #514a85;background:#211e36;color:#d9d5ff;padding:12px;border-radius:13px;font-size:13px;margin-top:12px}
+.empty{padding:24px;text-align:center;color:var(--muted)}.modal{position:fixed;inset:0;background:#000a;display:none;place-items:center;padding:16px;z-index:5}.modal.show{display:grid}.modalbox{width:min(440px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+footer{color:var(--muted);font-size:12px;text-align:center;margin-top:24px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.app{padding:15px 12px 35px}.top{align-items:flex-start}.top-actions button{padding:8px}.stats{grid-template-columns:repeat(3,1fr)}.schedule-row{grid-template-columns:70px 1fr auto}.row-actions{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+ <div class="brand"><div class="logo">M</div><div><h1>MyRoutine</h1><p>Ton rythme. Tes objectifs. Ta progression.</p></div></div>
+ <div class="top-actions"><button class="small" id="notifyBtn">Activer les rappels</button><button class="small ghost" id="todayBtn">Aujourd'hui</button></div>
+</header>
+<nav class="tabs">
+ <button class="tab active" data-view="home">Vue du jour</button>
+ <button class="tab" data-view="schedule">Planning</button>
+ <button class="tab" data-view="timer">Chronomètre</button>
+ <button class="tab" data-view="stats">Statistiques</button>
+</nav>
+
+<section class="view active" id="home">
+ <div class="grid">
+  <div class="card">
+   <div class="hero"><div><div class="eyebrow" id="dateLabel">Aujourd'hui</div><h2 id="dayTitle">Ta journée</h2><div class="muted" id="daySubtitle">Avance à ton rythme.</div></div><span class="tag" id="doneTag">0 terminé</span></div>
+   <div class="progress"><span id="dayProgress"></span></div>
+   <div class="muted" id="progressText">0 % de ta journée planifiée accomplie</div>
+   <div id="todayTasks"></div>
+  </div>
+  <div class="card">
+   <div class="eyebrow">À venir</div><h3 id="nextTitle">Prochaine activité</h3>
+   <p class="muted" id="nextInfo">Consulte ton programme.</p>
+   <div class="stats">
+    <div class="stat"><b id="statDone">0</b><small>Tâches faites</small></div>
+    <div class="stat"><b id="statTotal">0</b><small>Prévues aujourd'hui</small></div>
+    <div class="stat"><b id="statWeek">0%</b><small>Semaine</small></div>
+   </div>
+   <div class="note">Petit rappel : le planning est un guide. Garde du temps pour manger, souffler et dormir suffisamment.</div>
+  </div>
+ </div>
+</section>
+
+<section class="view" id="schedule">
+ <div class="card">
+  <div class="hero"><div><div class="eyebrow">Organisation hebdomadaire</div><h2>Ton planning</h2><p class="muted">Sélectionne un jour pour consulter ou modifier les activités.</p></div><button class="primary" id="addBtn">+ Ajouter</button></div>
+  <div class="daybar" id="dayButtons"></div>
+  <div id="scheduleList"></div>
+ </div>
+</section>
+
+<section class="view" id="timer">
+ <div class="grid">
+  <div class="card timer">
+   <div class="eyebrow">Chronomètre de concentration</div><h2 id="timerLabel">Session de travail</h2>
+   <div class="clock" id="clock">25:00</div>
+   <div class="field" style="max-width:180px;margin:10px auto"><label for="minutes">Durée (minutes)</label><input id="minutes" type="number" min="1" max="180" value="25"></div>
+   <div class="timer-controls"><button class="primary" id="startTimer">Démarrer</button><button id="pauseTimer">Pause</button><button id="resetTimer">Réinitialiser</button></div>
+   <p class="muted">Utilise-le pour les devoirs, la programmation ou une session de lecture.</p>
+  </div>
+  <div class="card"><h3>Conseil de concentration</h3><p class="muted">Essaie 25 minutes de travail, puis 5 minutes de pause. Après quatre sessions, prends une pause plus longue.</p><div class="note">Le chronomètre continue tant que la page reste ouverte. Évite de fermer l'onglet pendant une session.</div></div>
+ </div>
+</section>
+
+<section class="view" id="stats">
+ <div class="card">
+  <div class="eyebrow">Tes progrès</div><h2>Statistiques hebdomadaires</h2><p class="muted">Activités cochées par jour, sur la semaine en cours.</p>
+  <div class="stats">
+   <div class="stat"><b id="weekDone">0</b><small>Terminées</small></div>
+   <div class="stat"><b id="weekPlanned">0</b><small>Prévues</small></div>
+   <div class="stat"><b id="weekRate">0%</b><small>Régularité</small></div>
+  </div>
+  <div class="weekstats" id="weekChart"></div>
+  <div class="note">Les statistiques sont calculées à partir des tâches que tu coches dans MyRoutine.</div>
+ </div>
+</section>
+<footer>MyRoutine · Tes données restent enregistrées sur cet appareil.</footer>
+</div>
+
+<div class="modal" id="editModal"><div class="modalbox">
+ <h3 id="modalTitle">Modifier une activité</h3>
+ <div class="field"><label for="fTitle">Activité</label><input id="fTitle" maxlength="70" placeholder="Ex. Révisions de maths"></div>
+ <div class="field"><label for="fStart">Début</label><input id="fStart" type="time" value="18:00"></div>
+ <div class="field"><label for="fEnd">Fin</label><input id="fEnd" type="time" value="19:00"></div>
+ <div class="field"><label for="fCategory">Catégorie</label><select id="fCategory"><option>École</option><option>Révisions</option><option>Informatique</option><option>Sport</option><option>Loisirs</option><option>Repas</option><option>Repos</option><option>Autre</option></select></div>
+ <div class="modal-actions"><button id="cancelEdit">Annuler</button><button class="primary" id="saveEdit">Enregistrer</button></div>
+</div></div>
+
+<script>
+const DAYS=["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
+const shortDays=["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"];
+const defaultSchedule=[
+[
+["06:45","07:35","Réveil, petit-déjeuner et préparation","Repos"],
+["07:35","07:50","Trajet vers le lycée","École"],
+["08:00","17:00","Lycée","École"],
+["17:00","17:15","Trajet retour","Repos"],
+["17:15","18:00","Pause et goûter","Repos"],
+["18:00","19:00","Devoirs et révisions","Révisions"],
+["19:00","20:00","Dîner","Repas"],
+["20:00","21:30","Jeux vidéo / loisirs","Loisirs"],
+["21:30","22:00","Préparation au coucher","Repos"],
+["22:00","22:00","Coucher","Repos"]
+],
+[
+["07:00","08:30","Réveil, petit-déjeuner et préparation","Repos"],
+["09:45","10:00","Trajet vers le lycée","École"],
+["10:00","19:00","Lycée","École"],
+["19:00","19:15","Trajet retour","Repos"],
+["19:15","20:00","Dîner","Repas"],
+["20:00","20:45","Révisions légères","Révisions"],
+["20:45","21:30","Jeux vidéo / loisirs","Loisirs"],
+["21:30","22:00","Préparation au coucher","Repos"],
+["22:00","22:00","Coucher","Repos"]
+],
+[
+["07:30","08:30","Réveil et petit-déjeuner","Repos"],
+["08:45","09:00","Trajet vers le lycée","École"],
+["09:00","12:00","Lycée","École"],
+["12:00","13:30","Déjeuner et repos","Repas"],
+["13:30","15:00","Programmation / Roblox Studio","Informatique"],
+["15:00","15:30","Pause et déplacement","Repos"],
+["15:30","16:45","Salle de sport","Sport"],
+["16:45","17:30","Douche et récupération","Repos"],
+["17:30","18:30","Révisions","Révisions"],
+["18:30","20:00","Temps libre et dîner","Repas"],
+["20:00","21:30","Jeux vidéo","Loisirs"],
+["22:00","22:00","Coucher","Repos"]
+],
+[
+["06:45","07:35","Réveil et préparation","Repos"],
+["07:35","07:50","Trajet vers le lycée","École"],
+["08:00","17:00","Lycée","École"],
+["17:00","17:15","Trajet retour","Repos"],
+["17:15","18:00","Pause","Repos"],
+["18:00","19:00","Révisions et devoirs","Révisions"],
+["19:00","20:00","Dîner","Repas"],
+["20:00","21:30","Jeux vidéo / loisirs","Loisirs"],
+["21:30","22:00","Préparation au coucher","Repos"],
+["22:00","22:00","Coucher","Repos"]
+],
+[
+["08:30","09:30","Réveil et préparation","Repos"],
+["09:45","10:00","Trajet vers le lycée","École"],
+["10:00","13:00","Lycée","École"],
+["13:00","14:00","Déjeuner","Repas"],
+["14:00","15:15","Salle de sport","Sport"],
+["15:15","16:00","Douche et récupération","Repos"],
+["16:00","17:00","Temps libre","Loisirs"],
+["17:30","18:30","Badminton","Sport"],
+["18:30","20:00","Retour, douche et dîner","Repas"],
+["20:00","23:00","Jeux vidéo et loisirs","Loisirs"]
+],
+[
+["09:00","10:00","Réveil et petit-déjeuner","Repos"],
+["10:00","12:00","Programmation / projet personnel","Informatique"],
+["12:00","14:00","Déjeuner et repos","Repas"],
+["14:00","15:30","Révisions scolaires","Révisions"],
+["15:30","19:00","Temps libre","Loisirs"],
+["19:00","20:00","Dîner","Repas"],
+["20:00","23:00","Jeux vidéo et loisirs","Loisirs"]
+],
+[
+["09:00","10:00","Réveil et petit-déjeuner","Repos"],
+["10:00","11:15","Salle de sport","Sport"],
+["11:15","12:00","Douche et récupération","Repos"],
+["12:00","14:00","Déjeuner et repos","Repas"],
+["14:00","15:30","Révisions","Révisions"],
+["15:30","16:30","Python / informatique","Informatique"],
+["16:30","19:00","Temps libre","Loisirs"],
+["19:00","20:00","Dîner","Repas"],
+["20:00","21:00","Préparation de la semaine","Autre"],
+["21:30","21:30","Coucher","Repos"]
+]
+].map(day=>day.map((x,i)=>({id:crypto.randomUUID(),start:x[0],end:x[1],title:x[2],category:x[3]})));
+let schedule=JSON.parse(localStorage.getItem("mr_schedule")||"null")||defaultSchedule;
+let checks=JSON.parse(localStorage.getItem("mr_checks")||"{}");
+let selectedDay=(new Date().getDay()+6)%7, editIndex=null, editId=null;
+let timerLeft=25*60,timerHandle=null,timerRunning=false;
+const $=id=>document.getElementById(id);
+function save(){localStorage.setItem("mr_schedule",JSON.stringify(schedule));localStorage.setItem("mr_checks",JSON.stringify(checks))}
+function keyFor(d,id){return dateKey(d)+"_"+id}
+function done(d,item){return !!checks[keyFor(d,item.id)]}
+function dayIndex(){return (new Date().getDay()+6)%7}
+function dateKey(d){let now=new Date();let monday=new Date(now);monday.setDate(now.getDate()-((now.getDay()+6)%7)+d);return monday.toISOString().slice(0,10)}
+function switchView(v){document.querySelectorAll(".view").forEach(x=>x.classList.toggle("active",x.id===v));document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x.dataset.view===v));if(v==="stats")renderStats();if(v==="schedule")renderSchedule()}
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>switchView(b.dataset.view)));
+$("todayBtn").onclick=()=>{selectedDay=dayIndex();renderHome();renderSchedule();switchView("home")};
+function sorted(d){return [...schedule[d]].sort((a,b)=>a.start.localeCompare(b.start))}
+function renderHome(){
+ let d=dayIndex(),items=sorted(d),finished=items.filter(x=>done(d,x)).length;
+ $("dateLabel").textContent=new Intl.DateTimeFormat("fr-FR",{weekday:"long",day:"numeric",month:"long"}).format(new Date());
+ $("dayTitle").textContent=DAYS[d];$("daySubtitle").textContent="Voici ce qui est prévu aujourd'hui.";
+ $("doneTag").textContent=finished+" / "+items.length+" terminé(s)";
+ let pct=items.length?Math.round(finished/items.length*100):0;$("dayProgress").style.width=pct+"%";$("progressText").textContent=pct+" % des activités cochées";
+ $("statDone").textContent=finished;$("statTotal").textContent=items.length;$("statWeek").textContent=weekRate()+"%";
+ $("todayTasks").innerHTML=items.map(x=>`<div class="task ${done(d,x)?"done":""}"><input type="checkbox" ${done(d,x)?"checked":""} data-check="${x.id}"><div class="task-main"><div class="task-title">${esc(x.title)}</div><div class="task-time">${x.start}${x.end!==x.start?" – "+x.end:""}</div></div><span class="tag">${esc(x.category)}</span></div>`).join("")||'<div class="empty">Aucune activité prévue.</div>';
+ $("todayTasks").querySelectorAll("[data-check]").forEach(c=>c.onchange=()=>{let item=items.find(x=>x.id===c.dataset.check);checks[keyFor(d,item.id)]=c.checked;save();renderHome();renderStats()});
+ let now=new Date(),hm=now.toTimeString().slice(0,5),next=items.find(x=>x.start>=hm&&!done(d,x));
+ $("nextTitle").textContent=next?next.title:"Tu es à jour !";$("nextInfo").textContent=next?next.start+" · "+next.category:"Profite de ton temps libre ou repose-toi.";
+}
+function renderSchedule(){
+ $("dayButtons").innerHTML=DAYS.map((d,i)=>`<button class="daybtn ${i===selectedDay?"selected":""}" data-day="${i}">${shortDays[i]}</button>`).join("");
+ $("dayButtons").querySelectorAll("button").forEach(b=>b.onclick=()=>{selectedDay=+b.dataset.day;renderSchedule()});
+ let items=sorted(selectedDay);
+ $("scheduleList").innerHTML=items.map(x=>`<div class="schedule-row"><strong>${x.start}${x.end!==x.start?"<br><small>"+x.end+"</small>":""}</strong><div><p>${esc(x.title)}</p><small>${esc(x.category)}</small></div><div class="row-actions"><button class="small" data-edit="${x.id}">Modifier</button><button class="small ghost" data-del="${x.id}">×</button></div></div>`).join("")||'<div class="empty">Aucune activité.</div>';
+ $("scheduleList").querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>openEdit(b.dataset.edit));
+ $("scheduleList").querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{if(confirm("Supprimer cette activité ?")){schedule[selectedDay]=schedule[selectedDay].filter(x=>x.id!==b.dataset.del);save();renderSchedule();renderHome()}});
+}
+function openEdit(id=null){editId=id;let item=id?schedule[selectedDay].find(x=>x.id===id):null;$("modalTitle").textContent=item?"Modifier l'activité":"Ajouter une activité";$("fTitle").value=item?.title||"";$("fStart").value=item?.start||"18:00";$("fEnd").value=item?.end||"19:00";$("fCategory").value=item?.category||"Révisions";$("editModal").classList.add("show")}
+$("addBtn").onclick=()=>openEdit();$("cancelEdit").onclick=()=>$("editModal").classList.remove("show");
+$("saveEdit").onclick=()=>{let title=$("fTitle").value.trim(),start=$("fStart").value,end=$("fEnd").value;if(!title||!start||!end){alert("Renseigne le nom et les horaires.");return}if(end<start&&end!=="00:00"){alert("L'heure de fin doit être après l'heure de début.");return}let item={id:editId||crypto.randomUUID(),title,start,end,category:$("fCategory").value};if(editId){let i=schedule[selectedDay].findIndex(x=>x.id===editId);schedule[selectedDay][i]=item}else schedule[selectedDay].push(item);save();$("editModal").classList.remove("show");renderSchedule();renderHome()};
+$("addBtn").onclick=()=>openEdit();
+function weekData(){let out=[];for(let d=0;d<7;d++){let items=schedule[d];out.push({planned:items.length,done:items.filter(x=>done(d,x)).length})}return out}
+function weekRate(){let a=weekData(),p=a.reduce((s,x)=>s+x.planned,0),d=a.reduce((s,x)=>s+x.done,0);return p?Math.round(d/p*100):0}
+function renderStats(){let a=weekData(),p=a.reduce((s,x)=>s+x.planned,0),d=a.reduce((s,x)=>s+x.done,0);$("weekDone").textContent=d;$("weekPlanned").textContent=p;$("weekRate").textContent=(p?Math.round(d/p*100):0)+"%";$("weekChart").innerHTML=a.map((x,i)=>`<div class="barcol"><b>${x.done}/${x.planned}</b><div class="bar" style="height:${Math.max(3,x.planned?x.done/x.planned*100:0)}%"></div><small>${shortDays[i]}</small></div>`).join("");}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function showClock(){let m=Math.floor(timerLeft/60),s=timerLeft%60;$("clock").textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0")}
+$("minutes").onchange=()=>{if(!timerRunning){timerLeft=Math.max(1,Math.min(180,+$("minutes").value||25))*60;showClock()}};
+$("startTimer").onclick=()=>{if(timerRunning)return;timerRunning=true;timerHandle=setInterval(()=>{timerLeft--;showClock();if(timerLeft<=0){clearInterval(timerHandle);timerRunning=false;alert("Session terminée ! Prends une petite pause.")}},1000)};
+$("pauseTimer").onclick=()=>{clearInterval(timerHandle);timerRunning=false};
+$("resetTimer").onclick=()=>{clearInterval(timerHandle);timerRunning=false;timerLeft=Math.max(1,Math.min(180,+$("minutes").value||25))*60;showClock()};
+$("notifyBtn").onclick=async()=>{if(!("Notification"in window)){alert("Les notifications ne sont pas prises en charge par ce navigateur.");return}let p=await Notification.requestPermission();alert(p==="granted"?"Rappels activés : garde MyRoutine ouvert pour recevoir les alertes.":"Autorisation refusée. Tu peux la modifier dans les paramètres du navigateur.")};
+if("Notification"in window&&Notification.permission==="granted"){setInterval(()=>{let d=dayIndex(),hm=new Date().toTimeString().slice(0,5);sorted(d).filter(x=>x.start===hm).forEach(x=>new Notification("MyRoutine · "+x.title,{body:"C'est l'heure de commencer : "+x.start}))},30000)}
+if("serviceWorker"in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+renderHome();renderSchedule();renderStats();showClock();
+</script>
+</body></html>
